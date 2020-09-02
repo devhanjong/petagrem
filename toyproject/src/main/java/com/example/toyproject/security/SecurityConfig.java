@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	CustomUsersService customUserService;
 	
-	
+//	ｂｒａｎｃｈ
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		log.info("security config....");
