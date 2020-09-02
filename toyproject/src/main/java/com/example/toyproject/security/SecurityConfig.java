@@ -24,7 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	CustomUsersService customUserService;
 	
 	
-	//�씪諛섏쟻�씤 �뒪�봽留� �떆�걧由ы떚猷�
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		log.info("security config....");
