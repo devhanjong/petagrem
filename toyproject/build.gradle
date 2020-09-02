@@ -1,0 +1,78 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id 'war'
+}
+
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceCompatibility = '1.8'
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+	implementation "org.springframework.boot:spring-boot-devtools"
+	// https://mvnrepository.com/artifact/com.google.api-client/google-api-client
+	compile group: 'com.google.api-client', name: 'google-api-client', version: '1.25.0'
+
+	// https://mvnrepository.com/artifact/com.google.apis/google-api-services-youtube
+	compile group: 'com.google.apis', name: 'google-api-services-youtube', version: 'v3-rev212-1.25.0'
+
+	compile group: 'com.google.apis', name: 'google-api-services-youtubeAnalytics', version: 'v1-rev14-1.13.2-beta'
+
+	// https://mvnrepository.com/artifact/com.google.apis/google-api-services-youtubereporting
+	compile group: 'com.google.apis', name: 'google-api-services-youtubereporting', version: 'v1-rev1-1.20.0'
+
+	// https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty
+	compile("com.google.oauth-client:google-oauth-client-jetty:1.25.0") {
+		exclude group: 'org.mortbay.jetty', module: 'servlet-api'
+	}
+// https://mvnrepository.com/artifact/com.google.http-client/google-http-client-jackson2
+	compile group: 'com.google.http-client', name: 'google-http-client-jackson2', version: '1.25.0'
+
+	// https://mvnrepository.com/artifact/com.google.collections/google-collections
+	compile group: 'com.google.collections', name: 'google-collections', version: '1.0'
+
+	
+	//spring security
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+compile("org.springframework.boot:spring-boot-starter-mail")
+  	compile "org.springframework:spring-context-support"
+  	compile('org.springframework.boot:spring-boot-starter-web')
+   compile('org.springframework.boot:spring-boot-starter-mail')
+   testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+bootWar {
+	archiveBaseName = "toyproject"
+	archiveFileName = "toyproject.war"
+	archiveVersion = "0.0.0"
+}
+
+test {
+	useJUnitPlatform()
+}

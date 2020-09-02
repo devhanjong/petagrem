@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="asdgsadgag">
+    <output-path>$PROJECT_DIR$/out/artifacts/asdgsadgag</output-path>
+    <root id="archive" name="asdgsadgag.war" />
+  </artifact>
+</component>

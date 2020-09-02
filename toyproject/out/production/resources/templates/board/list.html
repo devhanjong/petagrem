@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+ <head th:replace="/common/head"> 
+<style>
+tbody>tr:hover {
+	cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+	<nav th:replace="/common/nav"></nav> 
+
+	<div class="jumbotron">
+		<div class="container text-center">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>번호</th>
+						<th>제목</th>
+						<th>작성자</th>
+						<th>작성일</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="board : ${list}" th:attr="id=${board.bbsId}">
+						<td th:text="${board.bbsId}"></td>
+						<td th:text="${board.bbsTitle}"></td>
+						<td th:text="${board.member.uid}"></td>
+						<td th:text="${board.bbsCreateDate}"></td>
+					</tr>
+				</tbody>
+			</table>
+		
+
+			<ul class="pagination">
+				<!-- 이전 페이지 넘어가기 버튼 추가 -->
+				<li>
+					<a th:if="${startPage} > 1" th:href="@{/board/(page=${startPage} - 10)}">&lt;</a>
+				</li>
+				<th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}">
+					<li th:class="${page == pageNumber} ? active">
+						<!-- class="active" 현재 페이지 일때 -->
+						<a th:href="@{/board/(page=${pageNumber})}" th:text="${pageNumber}"></a>
+					</li>
+				</th:block>
+				<!-- 다음 페이지 넘어가기 버튼 추가 -->
+				<li>
+					<a th:if="${totalPage} > ${endPage}" th:href="@{/board/(page=${startPage} + 10)}">&gt;</a>
+				</li>
+			</ul>
+
+
+			<button type="button" class="btn btn-primary btn-block" id="write">글쓰기</button>
+		</div>
+	</div>
+
+
+	
+
+	<script>
+    $("#write").click(function() {
+      location = "/board/write";
+    });
+
+    $("tbody > tr").click(function() {
+      var id = $(this).attr("id");
+      //var id = jQuery(this).attr("id");
+      location = "/board/" + id;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Thymeleaf3</title>
+</head>
+<body>
+	<script type="text/javascript" sec:authorize="!isAuthenticated()">
+        location.href = "/home"
+    </script>
+	
+	<form method="post">
+		<input type="hidden" th:name="${_csrf.parameterName}"
+							 th:value="${_csrf.token}"/>
+		<button type="submit" class="btn">LogOut</button>		
+
+	</form>
+
+</body>
+</html>
