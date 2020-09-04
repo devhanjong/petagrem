@@ -164,6 +164,12 @@ body {
     -o-box-sizing: border-box;
     -ms-box-sizing: border-box;
 }
+.form-v8-content .form-detail .checkbox input {
+	padding: inherit;
+	-webkit-appearance: checkbox;
+	width: 30px;
+	appearance: auto;
+}
 .form-v8-content .form-detail .form-row .input-text:focus{
 	border-bottom: 1px solid #53c83c;
 	background: transparent;
