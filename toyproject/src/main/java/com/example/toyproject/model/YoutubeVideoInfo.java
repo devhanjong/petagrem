@@ -17,6 +17,6 @@ public class YoutubeVideoInfo {
 	private String title; 		//게시글 생성자
 	private String videoId; 	//게시판 생성일자
 	private String publishedDate;
-	
+	private String keyword;
 	
 }
