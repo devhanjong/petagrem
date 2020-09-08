@@ -13,12 +13,6 @@ public class HomeController {
 		return "index";
 	}
 
-	@GetMapping("/port")
-	public String port() {
-
-		return "portfolio";
-	}
-	
 	@RequestMapping("/admin/home")
 	public String adminhome() {
 		return "admin/index";
