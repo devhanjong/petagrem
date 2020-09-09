@@ -81,6 +81,8 @@
                 <div class="breadcrumb__text">
                     <h2>방명록</h2>
                     <div class="breadcrumb__links">
+<!--                        <a href="#">Home</a>-->
+<!--                        <span>Blog</span>-->
                     </div>
                 </div>
             </div>
@@ -90,45 +92,26 @@
 <!-- Breadcrumb End -->
 
 <!-- Blog Section Begin -->
-<section class="blog spad">
+<section class="blog-details spad">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-6 col-sm-6" th:each="board: ${list}" th:attr="id=${board.bbsId}">
-                <div class="blog__item">
-                    <h4 th:text="${board.bbsTitle.substring(0, T(Math).min(board.bbsTitle.length() , 22))}"></h4>
-                    <ul>
-                        <li th:text="${board.bbsCreateDate}"></li>
-                        <li th:text="${board.member.uid}"></li>
-                    </ul>
-                    <p th:text="${board.bbsContent.substring(0,T(Math).min(board.bbsContent.length() , 34))}"></p>
-                    <a href="#" th:attr="id=board + ${board.bbsId}">Read more <span class="arrow_right"></span></a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="pagination__option blog__pagi">
-                    <!-- 이전 페이지 넘어가기 버튼 추가 -->
-                    <a>
-                        <a th:if="${startPage} > 1" th:href="@{/blog/(page=${startPage} - 10)}"></a>
-                    </a>
-                    <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
-                              class="number__pagination">
-                        <a th:class="${page == pageNumber} ? active">
-                            <!-- class="active" 현재 페이지 일때 -->
-                            <a class="number__pagination" th:href="@{/blog/(page=${pageNumber})}"
-                               th:text="${pageNumber}"></a>
-                        </a>
-                    </th:block>
-                    <!-- 다음 페이지 넘어가기 버튼 추가 -->
-                    <a>
-                        <a th:if="${totalPage} > ${endPage}" th:href="@{/board/(page=${startPage} + 10)}"></a>
-                    </a>
-                </div>
-                <div class="row" style="float: right">
-                    <div class="blog__details__tags">
-                        <a href="/blog/write" type="button" value="등록">등록</a>
-                    </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-8">
+                <div class="blog__details__comment">
+                    <h4>글쓰기</h4>
+                    <form id="form">
+                        <div class="input__list">
+                            <input type="text" name="bbsTitle" placeholder="제목을 입력하세요.">
+                        </div>
+                        <textarea placeholder="내용을 입력하세요." name="bbsContent"></textarea>
+                        <div class="input__list">
+                            <input type="password" style="width: 33.33%" placeholder="비밀번호를 입력하세요" name="password">
+                            <div class="blog__details__tags" style="float: right; border-bottom: none; padding-bottom: 0; margin-bottom: 0; margin-right: 10px; margin-top: 7px;">
+                                <a href="#" type="button" value="글쓰기" id="write">글쓰기</a>
+                                <a href="/blog/" type="button" value="목록">목록</a>
+                            </div>
+                        </div>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    </form>
                 </div>
             </div>
         </div>
@@ -231,13 +214,25 @@
 <script src="/js/owl.carousel.min.js"></script>
 <script src="/js/main.js"></script>
 <script>
-    $("#write").click(function () {
-        location = "/board/write";
-    });
-
-    $(".blog__item > a").click(function () {
-        var id = $(this).attr("id");
-        location = "/blog/" + id;
+    $("#write").click(function() {
+        var formData = new FormData($('#form')[0]);
+        console.log(formData);
+        $.ajax({
+            url: 'write',
+            type: 'post',
+            processData: false,
+            contentType:false,
+            data: formData,//form에 있는거 serialize()
+            success: function(res) {
+                if(res == "0") {
+                    location = "/loginResistForm";
+                    console.log('실패');
+                } else {
+                    history.go(-1);
+                }
+            }
+        });
+        return false;
     });
 </script>
 </body>

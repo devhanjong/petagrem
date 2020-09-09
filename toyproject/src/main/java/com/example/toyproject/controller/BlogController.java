@@ -50,13 +50,33 @@ public class BlogController {
 	// 뭘 수정할지 조회해야
 	@GetMapping("/board{id}")
 	public String boardDetail(Model model, @PathVariable("id") long id) {
-//		while(boardRepository.findById(id-1).get() != null){
-//
-//		};
+		List<Board> prenext = boardRepository.findPreNext(id, id);
+		Board preboard = null;
+		Board nextboard = null;
+
+		if(prenext.size() ==2){
+			//이전글 찾기 , 다음글 찾기
+			preboard = prenext.get(0);
+			nextboard = prenext.get(1);
+		}
+		else if(prenext.size() == 1 && prenext.get(0).getBbsId() > id ){
+			nextboard = prenext.get(0);
+		}
+		else if(prenext.size() ==1 && prenext.get(0).getBbsId() < id){
+			preboard = prenext.get(0);
+		}
+
+		System.out.println(preboard);
+		System.out.println(nextboard);
+
+
+
 		// jpa로 해당 아이디 게시물을 조회해야
 		Optional<Board> opt = boardRepository.findById(id); // 옵셔널클래스컬렉션타입 데이터타입은 보드
 		Board board = opt.get();
 		model.addAttribute("board", board);
+		model.addAttribute("preboard", preboard);
+		model.addAttribute("nextboard", nextboard);
 		return "board/blog-details";
 	}
 
@@ -90,20 +110,17 @@ public class BlogController {
 		return "board/blog";
 	}
 
-
-	
-
-	@GetMapping("/write") // board패키지 만들어주고 "/board/wrtie
-	public String boardWrite() { 
-		return "/board/write";
+		@GetMapping("/write") // board패키지 만들어주고 "/board/wrtie
+	public String boardWrite() {
+		return "/board/blog-write";
 	}
 	
-	@PostMapping("/write") 
+	@RequestMapping(value="/write", method = RequestMethod.POST)
 	@ResponseBody
 	//@ResponseBody가 없을시에는 모든 자료형으로 리턴이 가능
 	public String boardWritePost(@ModelAttribute Board board) {
 		String result = "1";
-		
+
 		/* 로그인 여부 확인 (세션의 값 확인) */
 		if (null == session.getAttribute("userid")) { // 로그인 X
 			result = "0";
