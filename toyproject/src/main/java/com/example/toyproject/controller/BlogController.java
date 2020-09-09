@@ -121,6 +121,8 @@ public class BlogController {
 	public String boardWritePost(@ModelAttribute Board board) {
 		String result = "1";
 
+		System.out.println(board);
+
 		/* 로그인 여부 확인 (세션의 값 확인) */
 		if (null == session.getAttribute("userid")) { // 로그인 X
 			result = "0";

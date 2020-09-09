@@ -98,7 +98,11 @@
             <div class="col-lg-8">
                 <div class="blog__details__comment">
                     <h4>글쓰기</h4>
+                    <label style="color: silver">
+                        <input type="checkbox" id="checkbox" value="checkbox"> 비밀글 (관리자와 작성자만 열람가능합니다.)
+                    </label>
                     <form id="form">
+                        <input type="hidden" id="hidden">
                         <div class="input__list">
                             <input type="text" name="bbsTitle" placeholder="제목을 입력하세요.">
                         </div>
@@ -215,8 +219,11 @@
 <script src="/js/main.js"></script>
 <script>
     $("#write").click(function() {
+        if($("#checkbox").is(":checked")){
+            $("#hidden").attr('name','hidden');
+            $("#hidden").attr('value', 1 );
+        }
         var formData = new FormData($('#form')[0]);
-        console.log(formData);
         $.ajax({
             url: 'write',
             type: 'post',

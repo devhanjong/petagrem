@@ -94,13 +94,21 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6" th:each="board: ${list}" th:attr="id=${board.bbsId}">
-                <div class="blog__item">
+                <div class="blog__item" th:if="${board.hidden == 0}">
                     <h4 th:text="${board.bbsTitle.substring(0, T(Math).min(board.bbsTitle.length() , 22))}"></h4>
                     <ul>
                         <li th:text="${board.bbsCreateDate}"></li>
                         <li th:text="${board.member.uid}"></li>
                     </ul>
                     <p th:text="${board.bbsContent.substring(0,T(Math).min(board.bbsContent.length() , 34))}"></p>
+                    <a href="#" th:attr="id=board + ${board.bbsId}">Read more <span class="arrow_right"></span></a>
+                </div>
+                <div class="blog__item" th:unless="${board.hidden == 0}">
+                    <h4>비밀글입니다.</h4>
+                    <ul>
+                        <li th:text="${board.bbsCreateDate}"></li>
+                    </ul>
+                    <p></p>
                     <a href="#" th:attr="id=board + ${board.bbsId}">Read more <span class="arrow_right"></span></a>
                 </div>
             </div>

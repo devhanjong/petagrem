@@ -45,6 +45,8 @@ public class Board {
 	private LocalDate bbsCreateDate; 	//게시판 생성일자
 
 	private String password;
+
+	private int hidden;
 	 
 	private int views;  					//게시글 조회수
 	
