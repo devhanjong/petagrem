@@ -92,6 +92,7 @@
 <!-- Blog Section Begin -->
 <section class="blog spad">
     <div class="container">
+        <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6" th:each="board: ${list}" th:attr="id=${board.bbsId}">
                 <div class="blog__item" th:if="${board.hidden == 0}">
@@ -246,36 +247,37 @@
 
     $(".blog__item > a").click(function () {
         //비밀글 체크 옵션넣기
-        var id = $(this).attr("id");
+        var id = $(this).attr("id").substring(5);
+        var id2 = $(this).attr("id");
+        var csrf = $('#csrf').val();
         $.ajax({
             url : 'hiddencheck',
             type : 'post',
             data : {
-                id : id
+                id : id,
+                _csrf : csrf
             },
             success : function(res){
-                console.log('hidden checked')
                 //비밀글인지 확인
-                if(res == 1){
+                if(res.result == 1){
                     //관리자거나 작성자인지확인
                     $.ajax({
                         url : 'authcheck',
                         type : 'post',
                         data : {
-                            id : id
+                            id : id,
+                            _csrf : csrf
                         },
                         success : function(res){
-                            console.log('auth checked')
                             if(res.result== 1 || res.result == 2){
                                 //admin , matchuser
-                                location = "/blog/" + id;
+                                location = "/blog/" + id2;
                             }
                             else {
                                 //user ,guest
                                 var input = prompt('글 비밀번호', 'password');
-                                alert(input);
                                 if(input == res.pwd){
-                                    location = "/blog/" + id;
+                                    location = "/blog/" + id2;
                                 }
                                 else{
                                     alert('비밀번호가 다릅니다.')
@@ -286,7 +288,7 @@
                 }
                 //비밀글이아니면
                 else{
-                    location = "/blog/" + id;
+                    location = "/blog/" + id2;
                 }
             }
         })

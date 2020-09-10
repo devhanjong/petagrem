@@ -1,5 +1,6 @@
 package com.example.toyproject.controller;
 
+import com.example.toyproject.exception.BadRequestException;
 import com.example.toyproject.model.Board;
 import com.example.toyproject.model.Comment;
 import com.example.toyproject.model.Member;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,9 +40,15 @@ public class BlogController {
 	@Autowired
 	HttpServletRequest HSR;
 	
-	// 뭘 수정할지 조회해야
 	@GetMapping("/board{id}")
-	public String boardDetail(Model model, @PathVariable("id") long id) {
+	public String boardDetail(Model model, @PathVariable("id") long id) throws Exception{
+		//비밀글이고 , 손님이나 , 다른유저이면
+		if(hiddencheck(Long.toString(id)).get("result") == 1){
+			if(Integer.parseInt(authcheck(Long.toString(id)).get("result")) == 0 ||
+					Integer.parseInt(authcheck(Long.toString(id)).get("result")) == 3){
+				throw new BadRequestException("Bad Request!!!");
+			}
+		}
 		List<Board> prenext = boardRepository.findPreNext(id, id);
 		Board preboard = null;
 		Board nextboard = null;
@@ -57,8 +65,8 @@ public class BlogController {
 			preboard = prenext.get(0);
 		}
 
-		System.out.println(preboard);
-		System.out.println(nextboard);
+//		System.out.println(preboard);
+//		System.out.println(nextboard);
 
 
 
@@ -71,23 +79,28 @@ public class BlogController {
 		return "board/blog-details";
 	}
 
-	@PostMapping("/hiddencheck")
-	public int hiddencheck(long id){
-		System.out.println("hidden in");
-		if(boardRepository.findById(id).get().getHidden() == 1){
+	@RequestMapping(value = "hiddencheck" , method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Integer> hiddencheck(String id){
+		Map<String,Integer> json = new HashMap<>();
+		long tmp = Long.parseLong(id, 10);
+		if(boardRepository.findById(tmp).get().getHidden() == 1){
 			//비밀글이라면
-			return 1;
+			json.put("result" , 1);
+			return json;
 		}else {
 			//공개글
-			return 0;
+			json.put("result", 0);
+			return json;
 		}
 	}
 
 	@PostMapping("/authcheck")
-	public Map authcheck(long id){
-		System.out.println("auth in");
+	@ResponseBody
+	public Map<String, String> authcheck(String id){
+		long tmp = Long.parseLong(id, 10);
 		Map<String,String> json = new HashMap<>();
-		String pwd = boardRepository.findById(id).get().getPassword();
+		String pwd = boardRepository.findById(tmp).get().getPassword();
 		json.put("pwd", pwd);
 		if( HSR.getAttribute("userid") == null){
 			//guest
@@ -99,7 +112,7 @@ public class BlogController {
 			json.put("result", "1");
 			return json;
 		}
-		else if(HSR.getAttribute("userid") == boardRepository.findById(id).get().getMember().getUid()){
+		else if(HSR.getAttribute("userid") == boardRepository.findById(tmp).get().getMember().getUid()){
 			//세션아이디랑 게시글 아이디가 같으면
 			json.put("result", "2");
 			return json;

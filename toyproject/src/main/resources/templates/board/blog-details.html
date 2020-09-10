@@ -104,7 +104,7 @@
 
                     <div class="blog__details__tags" >
 <!--                        <span><i class="fa fa-tag"></i> Tag:</span>-->
-                        <a href="../blog">목록</a>
+                        <a href="#" id="list">목록</a>
                         <a href="#">수정</a>
                         <a href="#">삭제</a>
                     </div>
@@ -306,6 +306,11 @@
 <script src="/js/jquery.slicknav.js"></script>
 <script src="/js/owl.carousel.min.js"></script>
 <script src="/js/main.js"></script>
+<script>
+    $("#list").click(function (){
+        history.back()
+    })
+</script>
 
 </body>
 
