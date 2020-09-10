@@ -255,7 +255,7 @@
             type : 'post',
             data : {
                 id : id,
-                _csrf : csrf
+                _csrf : csrf,
             },
             success : function(res){
                 //비밀글인지 확인
@@ -266,7 +266,8 @@
                         type : 'post',
                         data : {
                             id : id,
-                            _csrf : csrf
+                            _csrf : csrf,
+                            click : "1"
                         },
                         success : function(res){
                             if(res.result== 1 || res.result == 2){

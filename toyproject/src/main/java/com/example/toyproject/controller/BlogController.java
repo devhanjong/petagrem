@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -44,8 +45,8 @@ public class BlogController {
 	public String boardDetail(Model model, @PathVariable("id") long id) throws Exception{
 		//비밀글이고 , 손님이나 , 다른유저이면
 		if(hiddencheck(Long.toString(id)).get("result") == 1){
-			if(Integer.parseInt(authcheck(Long.toString(id)).get("result")) == 0 ||
-					Integer.parseInt(authcheck(Long.toString(id)).get("result")) == 3){
+			if(Integer.parseInt(authcheck(Long.toString(id), "0").get("result")) == 0 ||
+					Integer.parseInt(authcheck(Long.toString(id), "0").get("result")) == 3){
 				throw new BadRequestException("Bad Request!!!");
 			}
 		}
@@ -97,11 +98,12 @@ public class BlogController {
 
 	@PostMapping("/authcheck")
 	@ResponseBody
-	public Map<String, String> authcheck(String id){
+	public Map<String, String> authcheck(String id, String click){
 		long tmp = Long.parseLong(id, 10);
 		Map<String,String> json = new HashMap<>();
 		String pwd = boardRepository.findById(tmp).get().getPassword();
 		json.put("pwd", pwd);
+		json.put("click", click);
 		if( HSR.getAttribute("userid") == null){
 			//guest
 			json.put("result", "0");
