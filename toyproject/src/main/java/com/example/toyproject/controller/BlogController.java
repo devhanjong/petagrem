@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping("/blog") // 하나의 주소로 만들어주는거 /board랑 /write합쳐서 => /board/write로 주소가 지정된다
@@ -35,17 +37,6 @@ public class BlogController {
 	
 	@Autowired
 	HttpServletRequest HSR;
-	
-//	@RequestMapping("/board")
-//	@GetMapping("/board{id}")
-//	public String boardView(Model model, @PathVariable("id") long id) {
-//		Optional<Board> data = boardRepository.findById(id);
-//		Board board = data.get();
-//		// Board board = boardRepository.findById(id).get(); 위의 2줄을 한줄로
-//
-//		model.addAttribute("board", board);// k,v
-//		return "board/blog-details";
-//	}
 	
 	// 뭘 수정할지 조회해야
 	@GetMapping("/board{id}")
@@ -80,7 +71,45 @@ public class BlogController {
 		return "board/blog-details";
 	}
 
+	@PostMapping("/hiddencheck")
+	public int hiddencheck(long id){
+		System.out.println("hidden in");
+		if(boardRepository.findById(id).get().getHidden() == 1){
+			//비밀글이라면
+			return 1;
+		}else {
+			//공개글
+			return 0;
+		}
+	}
 
+	@PostMapping("/authcheck")
+	public Map authcheck(long id){
+		System.out.println("auth in");
+		Map<String,String> json = new HashMap<>();
+		String pwd = boardRepository.findById(id).get().getPassword();
+		json.put("pwd", pwd);
+		if( HSR.getAttribute("userid") == null){
+			//guest
+			json.put("result", "0");
+			return json;
+		}
+		else if(HSR.getAttribute("authority") != null){
+			//admin
+			json.put("result", "1");
+			return json;
+		}
+		else if(HSR.getAttribute("userid") == boardRepository.findById(id).get().getMember().getUid()){
+			//세션아이디랑 게시글 아이디가 같으면
+			json.put("result", "2");
+			return json;
+		}else{
+			//로그인된 다른유저
+			json.put("result", "3");
+			return json;
+		}
+
+	};
 
 	
 	
@@ -100,6 +129,8 @@ public class BlogController {
 		if (endPage > totalPage) {
 			endPage = totalPage;
 		}
+
+
 		List<Board> list = result.getContent();
 		model.addAttribute("list", list);
 		model.addAttribute("startPage", startPage);
