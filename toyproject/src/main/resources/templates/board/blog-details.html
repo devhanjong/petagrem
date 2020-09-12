@@ -104,7 +104,7 @@
 
                     <div class="blog__details__tags" >
 <!--                        <span><i class="fa fa-tag"></i> Tag:</span>-->
-                        <a href="#" id="list">목록</a>
+                        <a id="list" th:href="@{/blog/(page=${page})}">목록</a>
                         <a href="#">수정</a>
                         <a href="#">삭제</a>
                     </div>
@@ -125,7 +125,7 @@
                                 </a>
                                 </div>
                                 <div th:unless="${preboard == null}">
-                                <a th:attr="href='./board' + ${preboard.bbsId}" class="blog__details__option__item">
+                                <a th:attr="href='./board' + ${preboard.bbsId} + '?page='+ ${page}" class="blog__details__option__item">
                                     <h5><i class="fa fa-angle-left"></i> Previous posts</h5>
                                     <div class="blog__details__option__item__img">
                                         <img src="/img/blog/prev.jpg" alt="">
@@ -151,7 +151,7 @@
                                     </a>
                                 </div>
                                 <div th:unless="${nextboard == null}">
-                                    <a th:attr="href='./board' + ${nextboard.bbsId}"
+                                    <a th:attr="href='./board' + ${nextboard.bbsId} + '?page='+ ${page}"
                                        class="blog__details__option__item blog__details__option__item--right">
                                         <h5>Next posts <i class="fa fa-angle-right"></i></h5>
                                         <div class="blog__details__option__item__img">

@@ -108,6 +108,7 @@
                 <div class="blog__item" th:unless="${board.hidden == 0}">
                     <h4>비밀글입니다.</h4>
                     <ul>
+                        <li th:text="${board.bbsId}"></li>
                         <li th:text="${board.bbsCreateDate}"></li>
                     </ul>
                     <p></p>
@@ -124,10 +125,10 @@
                     </a>
                     <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
                               class="number__pagination">
-                        <a th:class="${page == pageNumber} ? active">
+                        <a th:class="${page == pageNumber} ? active" th:value="${pageNumber}">
                             <!-- class="active" 현재 페이지 일때 -->
                             <a class="number__pagination" th:href="@{/blog/(page=${pageNumber})}"
-                               th:text="${pageNumber}"></a>
+                               th:text="${pageNumber}" ></a>
                         </a>
                     </th:block>
                     <!-- 다음 페이지 넘어가기 버튼 추가 -->
@@ -248,51 +249,12 @@
     $(".blog__item > a").click(function () {
         //비밀글 체크 옵션넣기
         var id = $(this).attr("id").substring(5);
-        var id2 = $(this).attr("id");
-        var csrf = $('#csrf').val();
-        $.ajax({
-            url : 'hiddencheck',
-            type : 'post',
-            data : {
-                id : id,
-                _csrf : csrf,
-            },
-            success : function(res){
-                //비밀글인지 확인
-                if(res.result == 1){
-                    //관리자거나 작성자인지확인
-                    $.ajax({
-                        url : 'authcheck',
-                        type : 'post',
-                        data : {
-                            id : id,
-                            _csrf : csrf,
-                            click : "1"
-                        },
-                        success : function(res){
-                            if(res.result== 1 || res.result == 2){
-                                //admin , matchuser
-                                location = "/blog/" + id2;
-                            }
-                            else {
-                                //user ,guest
-                                var input = prompt('글 비밀번호', 'password');
-                                if(input == res.pwd){
-                                    location = "/blog/" + id2;
-                                }
-                                else{
-                                    alert('비밀번호가 다릅니다.')
-                                }
-                            }
-                        }
-                    })
-                }
-                //비밀글이아니면
-                else{
-                    location = "/blog/" + id2;
-                }
-            }
-        })
+        var page = $('.blog__pagi .active').attr('value');
+        var url = 'board' + id
+
+        // location = "/blog/"+ url + "?id="+ id + "&page="+ page
+        location = `/blog/${url}?page=${page}`;
+
     });
 </script>
 </body>

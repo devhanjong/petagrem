@@ -42,14 +42,7 @@ public class BlogController {
 	HttpServletRequest HSR;
 	
 	@GetMapping("/board{id}")
-	public String boardDetail(Model model, @PathVariable("id") long id) throws Exception{
-		//비밀글이고 , 손님이나 , 다른유저이면
-		if(hiddencheck(Long.toString(id)).get("result") == 1){
-			if(Integer.parseInt(authcheck(Long.toString(id), "0").get("result")) == 0 ||
-					Integer.parseInt(authcheck(Long.toString(id), "0").get("result")) == 3){
-				throw new BadRequestException("Bad Request!!!");
-			}
-		}
+	public String boardDetail(Model model, @PathVariable("id") long id, int page) {
 		List<Board> prenext = boardRepository.findPreNext(id, id);
 		Board preboard = null;
 		Board nextboard = null;
@@ -65,71 +58,15 @@ public class BlogController {
 		else if(prenext.size() ==1 && prenext.get(0).getBbsId() < id){
 			preboard = prenext.get(0);
 		}
-
-//		System.out.println(preboard);
-//		System.out.println(nextboard);
-
-
-
 		// jpa로 해당 아이디 게시물을 조회해야
 		Optional<Board> opt = boardRepository.findById(id); // 옵셔널클래스컬렉션타입 데이터타입은 보드
 		Board board = opt.get();
 		model.addAttribute("board", board);
 		model.addAttribute("preboard", preboard);
 		model.addAttribute("nextboard", nextboard);
+		model.addAttribute("page", page);
 		return "board/blog-details";
 	}
-
-	@RequestMapping(value = "hiddencheck" , method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Integer> hiddencheck(String id){
-		Map<String,Integer> json = new HashMap<>();
-		long tmp = Long.parseLong(id, 10);
-		if(boardRepository.findById(tmp).get().getHidden() == 1){
-			//비밀글이라면
-			json.put("result" , 1);
-			return json;
-		}else {
-			//공개글
-			json.put("result", 0);
-			return json;
-		}
-	}
-
-	@PostMapping("/authcheck")
-	@ResponseBody
-	public Map<String, String> authcheck(String id, String click){
-		long tmp = Long.parseLong(id, 10);
-		Map<String,String> json = new HashMap<>();
-		String pwd = boardRepository.findById(tmp).get().getPassword();
-		json.put("pwd", pwd);
-		json.put("click", click);
-		if( HSR.getAttribute("userid") == null){
-			//guest
-			json.put("result", "0");
-			return json;
-		}
-		else if(HSR.getAttribute("authority") != null){
-			//admin
-			json.put("result", "1");
-			return json;
-		}
-		else if(HSR.getAttribute("userid") == boardRepository.findById(tmp).get().getMember().getUid()){
-			//세션아이디랑 게시글 아이디가 같으면
-			json.put("result", "2");
-			return json;
-		}else{
-			//로그인된 다른유저
-			json.put("result", "3");
-			return json;
-		}
-
-	};
-
-	
-	
-	
-
 
 	@GetMapping("") 
 	public String board(Model model, @RequestParam(name = "page", defaultValue = "1") int page) {
@@ -227,12 +164,25 @@ public class BlogController {
 	
 	
 	
-	@GetMapping("/home")
-	public String home() { 
+	@GetMapping("/blogpwcheck")
+	public String blogpwcheck() {
 		
-		return "index";
+		return "/board/blogpwcheck";
 	}
-	
+
+	@PostMapping("/blogpwcheck")
+	@ResponseBody
+	public String blogpwcheckpost(String password, long id, @RequestParam Map<String, Object> map) {
+			System.out.println(map);
+		if(boardRepository.findById(id).get().getPassword().equals(password)){
+			System.out.println("Match!!");
+			session.setAttribute("pwmatch", id);
+			return "1";
+		}
+
+		return "0";
+	}
+
 	
 	
 

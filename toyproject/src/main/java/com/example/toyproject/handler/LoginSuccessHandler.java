@@ -51,13 +51,13 @@ HttpSession session;
 				session.setAttribute("authority", authority.getAuthority());
 				url="/admin/home";
 			}
-	}
+		}
 		
 		
 		session.setAttribute("userid", mem.getUid());
 		session.setAttribute("userName", mem.getUname());
 		session.setAttribute("userEmail", mem.getUemail());
-		
+
 
 		res.sendRedirect(url);
 		
